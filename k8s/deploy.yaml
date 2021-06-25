@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-multicast-v1
+  namespace: monitoring
+  labels:
+    app: k8s-multicast
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-multicast
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: k8s-multicast
+        version: v1
+    spec:
+      serviceAccountName: k8s-multicast
+      containers:
+      - name: k8s-multicast
+        image: registry.example.com/devops/k8s-multicast:v0.0.1
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: PORT
+          value: "8080"
+        - name: NAMESPACE_NAME
+          value: ""
+        - name: ENDPOINT_NAME
+          value: "" 
+        resources:
+          requests:
+            cpu: 200m
+            memory: 500Mi
+          limits:
+            cpu: 600m
+            memory: 1000Mi
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-multicast
+  namespace: monitoring
+  labels:
+    app: k8s-multicast
+spec:
+  type: ClusterIP
+  selector:
+    app: k8s-multicast
+  ports:
+  - protocol: TCP
+    port: 8080
+    name: http
+    targetPort: 8080

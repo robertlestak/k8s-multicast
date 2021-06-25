@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8s-multicast
+  namespace: namespace-name
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: k8s-multicast
+  namespace: namespace-name
+rules:
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: k8s-multicast-binding
+  namespace: namespace-name
+subjects:
+- kind: ServiceAccount
+  name: k8s-multicast
+roleRef:
+  kind: Role
+  name: k8s-multicast
+  apiGroup: rbac.authorization.k8s.io
