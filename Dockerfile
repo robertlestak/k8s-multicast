@@ -1,4 +1,4 @@
-FROM golang:1.15 as builder
+FROM golang:1.18 as builder
 
 WORKDIR /src
 
@@ -6,7 +6,7 @@ COPY . .
 
 RUN go build -o k8smulticast .
 
-FROM golang:1.15 as app
+FROM golang:1.18 as app
 
 WORKDIR /app
 
